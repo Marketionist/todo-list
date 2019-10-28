@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Todo List application</title>
+</head>
+<body>
+    <h1>Todos</h1>
+
+    <div>
+        <input type="text" id="search-todo" placeholder="Search todos">
+    </div>
+
+    <div>
+        <label>
+            Hide completed todos: <input type="checkbox" name="hideCompletedTodos" id="hide-completed-todos">
+        </label>
+    </div>
+
+    <div>
+        <select name="" id="filter-by">
+            <option value="byEdited">Sort by last edited</option>
+            <option value="byCreated">Sort by recently created</option>
+            <option value="byAlphabet">Sort alphabetically</option>
+        </select>
+        <button id="remove-all-todos">Remove all todos</button>
+    </div>
+
+    <div id="todos"></div>
+
+    <form id="todo-form">
+        <input type="text" name="newTodo" placeholder="New todo">
+        <button id="add-todo">Add todo</button>
+    </form>
+</body>
+
+<footer>
+    <script>
+        let allTodos = [
+            {
+                text: 'do some activity',
+                completed: true
+            },
+            {
+                text: 'Search for TREASURE',
+                completed: false
+            },
+            {
+                text: 'Get some water',
+                completed: false
+            },
+            {
+                text: 'do the shopping',
+                completed: true
+            },
+            {
+                text: 'do the chores',
+                completed: true
+            },
+            {
+                text: 'draw a nice picture',
+                completed: false
+            }
+        ];
+
+        const allTodosSaved = localStorage.getItem('allTodos');
+
+        if (allTodosSaved !== null) {
+            allTodos = JSON.parse(allTodosSaved);
+        }
+
+        localStorage.setItem('allTodos', JSON.stringify(allTodos));
+
+        const renderTodosLeftSummary = (todosLeft) => {
+            const todosLeftSummary = document.createElement('h2');
+
+            todosLeftSummary.textContent = `${todosLeft.length} todos left`;
+            document.querySelector('#todos').appendChild(todosLeftSummary);
+        };
+
+        let filters = {
+            searchText: ''
+        };
+
+        const animateButton = (button, callback = () => {}) => {
+            const buttonTimeout = 500;
+            const initialButtonTextContent = button.textContent;
+
+            setTimeout(() => {
+                button.textContent = '..';
+
+                setTimeout(() => {
+                    button.textContent = '....';
+
+                    setTimeout(() => {
+                        button.textContent = 'Done';
+
+                        setTimeout(() => {
+                            button.textContent = initialButtonTextContent;
+                            if (typeof callback === 'function') {
+                                return callback();
+                            }
+                        }, buttonTimeout);
+                    }, buttonTimeout);
+                }, buttonTimeout);
+            }, buttonTimeout);
+        };
+
+        const renderTodos = (todos, filters) => {
+            const filteredTodos = todos.filter(todo => {
+                return todo.text.toLowerCase().includes(filters.searchText.toLowerCase());
+            });
+
+            filteredTodos.map(todo => {
+                const newParagraph = document.createElement('p');
+                newParagraph.className = 'todo';
+                // newParagraph.textContent = `* ${todo.text[0].toUpperCase()}${todo.text.substring(1)}`;
+                newParagraph.innerHTML = `* ${todo.text[0].toUpperCase()}${todo.text.substring(1)} <button id="remove-todo">x</button>`;
+                document.querySelector('#todos').appendChild(newParagraph);
+
+                return newParagraph;
+            });
+
+            Array.from(document.querySelectorAll('#remove-todo')).map(function (button) {
+                button.addEventListener('click', function (event) {
+                    console.log(event.target.parentElement.textContent);
+
+                    const todosLeft = allTodos.filter(todo => !todo.completed);
+
+                    const a = allTodos.splice(allTodos.findIndex(function (element) {
+                        return event.target.parentElement.textContent.toLowerCase().includes(element.text.toLocaleLowerCase());
+                    }), 1);
+
+                    localStorage.setItem('allTodos', JSON.stringify(allTodos));
+
+                    console.log(`From #remove-todo: Now all todos saved in localStorage are: ${localStorage.getItem('allTodos')}`);
+
+                    const todosLeftTodoIndex = todosLeft.findIndex(function (element) {
+                        return event.target.parentElement.textContent.toLowerCase().includes(element.text.toLocaleLowerCase());
+                    });
+
+                    let b;
+
+                    if (todosLeftTodoIndex !== -1) {
+                        b = todosLeft.splice(todosLeftTodoIndex, 1);
+                    }
+
+                    console.log(`Removing a: ${JSON.stringify(a)}, b: ${JSON.stringify(b)}`);
+
+                    animateButton(button, () => event.target.parentElement.outerHTML = '');
+                });
+            });
+
+            if (filteredTodos.length < 1) {
+                document.querySelector('#todos').innerHTML = '<p>No todos match your query</p>';
+            }
+
+        }
+
+        const unrenderAllTodos = () => {
+            document.querySelector('#todos').innerHTML = '';
+        }
+
+        // "Remove all todos" button
+        document.querySelector('#remove-all-todos').addEventListener('click', function (event) {
+            unrenderAllTodos();
+
+            console.log(`Removing all todos from localStorage: ${localStorage.getItem('allTodos')}`);
+
+            allTodos = [];
+
+            localStorage.removeItem('allTodos');
+        });
+
+        // "Search todos" input
+        document.querySelector('#search-todo').addEventListener('input', function (event) {
+            console.log(`Searching for: ${event.target.value}`);
+
+            filters.searchText = event.target.value;
+
+            unrenderAllTodos();
+
+            // Search in allTodos or in todosLeft depending on "Hide completed todos" checkbox
+            if (document.querySelector('#hide-completed-todos').checked) {
+                const todosLeft = allTodos.filter(todo => !todo.completed);
+
+                renderTodosLeftSummary(todosLeft);
+                renderTodos(todosLeft, filters);
+            } else {
+                renderTodos(allTodos, filters);
+            }
+        });
+
+        document.querySelector('#todo-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            allTodos.push({
+                text: event.target.elements.newTodo.value,
+                completed: false
+            });
+
+            localStorage.setItem('allTodos', JSON.stringify(allTodos));
+
+            console.log(`From #todo-form: Now all todos saved in localStorage are: ${localStorage.getItem('allTodos')}`);
+
+            event.target.elements.newTodo.value = '';
+
+            const todosLeft = allTodos.filter(todo => !todo.completed);
+
+            unrenderAllTodos();
+            renderTodosLeftSummary(todosLeft);
+            renderTodos(todosLeft, filters);
+
+            // Hide completed todos by checking the checkbox
+            document.querySelector('#hide-completed-todos').checked = true;
+
+            // Animate "Add todo" button
+            const addTodoButton = document.querySelector('#add-todo');
+            animateButton(addTodoButton);
+        });
+
+        // "Hide completed todos" checkbox
+        document.querySelector('#hide-completed-todos').addEventListener('change', function (event) {
+            unrenderAllTodos();
+
+            const todosLeft = allTodos.filter(todo => !todo.completed);
+
+            if (event.target.checked) {
+                renderTodosLeftSummary(todosLeft);
+                renderTodos(todosLeft, filters);
+            } else {
+                renderTodos(allTodos, filters);
+            }
+        });
+
+        document.querySelector('#filter-by').addEventListener('change', function (event) {
+            console.log(event.target.value);
+        });
+
+        // By default render all todos
+        renderTodos(allTodos, filters);
+    </script>
+</footer>
+
+</html>
