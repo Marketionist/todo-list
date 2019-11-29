@@ -1,16 +1,18 @@
 {
     "parserOptions": {
         "ecmaVersion": 6,
-        "sourceType": "module"
+        "sourceType": "script"
     },
     "env": {
         "browser": true,
         "es6": true,
         "node": true,
         "jquery": true,
-        "jasmine": true,
-        "protractor": true
+        "jasmine": true
     },
+    "plugins": [
+        "eslint-plugin-html"
+    ],
     "globals": {
         "$": true,
         "module": true,
