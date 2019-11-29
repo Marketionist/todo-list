@@ -1,0 +1,43 @@
+{
+  "name": "todo-list",
+  "version": "0.0.1",
+  "description": "App for storing todo lists",
+  "main": "todo-list.html",
+  "engines": {
+    "node": ">=6.9.x"
+  },
+  "scripts": {
+    "lint": "node_modules/.bin/eslint --ext .html *.html",
+    "patch": "npm version patch -m \"Bumped up package version to %s\" && git push && git push origin --tags && npm publish",
+    "minor": "npm version minor -m \"Bumped up package version to %s\" && git push && git push origin --tags && npm publish",
+    "major": "npm version major -m \"Bumped up package version to %s\" && git push && git push origin --tags && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Marketionist/protractor-cucumber-steps"
+  },
+  "keywords": [
+    "todo list",
+    "todo-list",
+    "todo list app",
+    "todo-list-app",
+    "todolist app",
+    "todolist-app",
+    "todo list application",
+    "todo-list-application",
+    "todolist application",
+    "todolist-application",
+    "todo list browser application",
+    "todo-list-browser-application",
+    "todo list js application",
+    "todo-list-js-application",
+    "todo list html application",
+    "todo-list-html-application"
+  ],
+  "author": "Dmytro Shpakovskyi",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^6.7.1",
+    "eslint-plugin-html": "^6.0.0"
+  }
+}
