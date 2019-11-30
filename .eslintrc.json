@@ -32,9 +32,6 @@
         "EC": true
     },
     "root": true,
-    "ecmaFeatures": {
-        "modules": true
-    },
     "rules": {
         // Possible Errors
         "comma-dangle": [2, "never"],
