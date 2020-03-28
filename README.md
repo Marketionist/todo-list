@@ -13,3 +13,7 @@ To use this app execute 2 simple steps:
     [raw todo-list.html](https://raw.githubusercontent.com/Marketionist/todo-list/master/todo-list.html)
     and *right click* -> *Save As* -> *Save*
 2. Open `todo-list.html` in your browser and enjoy adding notes or grocery lists!
+
+## Thanks
+If this app was helpful to you, please give it a **★ Star** on
+[Github](https://github.com/Marketionist/todo-list).
