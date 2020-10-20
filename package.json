@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Marketionist/protractor-cucumber-steps"
+    "url": "https://github.com/Marketionist/todo-list"
   },
   "keywords": [
     "todo list",
@@ -34,10 +34,10 @@
     "todo list html application",
     "todo-list-html-application"
   ],
-  "author": "Dmytro Shpakovskyi",
+  "author": "Marketionist <https://github.com/Marketionist>",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-plugin-html": "^6.0.0"
+    "eslint": "^7.11.0",
+    "eslint-plugin-html": "^6.1.0"
   }
 }
